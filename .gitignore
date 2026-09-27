@@ -1,5 +1,6 @@
 .streamlit/secrets.toml
-
+cv.md
+linkedin.md
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

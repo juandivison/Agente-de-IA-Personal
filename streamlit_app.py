@@ -99,24 +99,15 @@ def init_rag_vector_db(usuario_gh: str):
     # Si la base de datos está vacía, proceder a indexar
     if collection.count() == 0:
         # 1. Fragmentos del CV
-        datos_cv = [
-            "Juan Ramón Divisón es Software Developer y Software Architect con base en Santo Domingo, República Dominicana.",
-            "Perfil Profesional: Especializado en diseño, refactorización y desarrollo de soluciones empresariales desktop, web y bases de datos relacionales.",
-            "Lenguajes de programación: Delphi (D7 a D10), C# (.NET Core, ASP.NET, Blazor), Node.js (Express), Python, JavaScript, HTML5 y CSS3.",
-            "Bases de Datos: Amplia experiencia en Firebird 2.5/4.0, Microsoft SQL Server, PostgreSQL y SQLite.",
-            "Herramientas y Entornos: Visual Studio Code, Docker, Git/GitHub, Zebra ZPL e Impresoras Térmicas POS (Epson TM-T20, Rongta RP425).",
-            "Cumplimiento Fiscal Local (República Dominicana): Integración de e-CF DGII (Facturación Electrónica), esquemas XML (E32, E34), validaciones, cálculo de ITBIS y generación de archivos SUIR Plus / TSS.",
-            "Experiencia en Sistemas Empresariales: Desarrollo y arquitectura de software para sistemas ERP (sistema-erp-pyramid), puntos de venta (POS) y sincronización de bases de datos distribuidas.",
-            "Educación y Docencia: Diseño instruccional y facilitación de cursos de capacitación técnica en entornos virtuales.",
-            "Sistemas Operativos y Automatización: Administración de servidores Linux, scripts en Bash, inspección de red con Python/Scapy y flujos de automatización con n8n.",
-            "Inteligencia Artificial y RAG: Experiencia en desarrollo de soluciones multi-agente con CrewAI, LangGraph y arquitecturas RAG con bases de datos vectoriales."
-        ]
+        
+        datos_cv = cargar_y_fragmentar_cv("cv.md")
+        datos_linkedin = cargar_y_fragmentar_cv("linkedin.md")
 
         # 2. Fragmentos de GitHub
         datos_github = obtener_repositorios_github(usuario_gh, github_token)
         
         # Unir todos los documentos a indexar
-        documentos_totales = datos_cv + datos_github
+        documentos_totales = datos_cv + datos_linkedin + datos_github
 
         # Generar embeddings e indexar en ChromaDB
         for i, texto in enumerate(documentos_totales):
@@ -160,6 +151,19 @@ def init_sql_db():
     conn.close()
 
 init_sql_db()
+
+def cargar_y_fragmentar_cv(ruta_archivo: str = "cv.md", tamano_bloque: int = 500) -> list[str]:
+    """Lee el CV de un archivo de texto o Markdown y lo divide en párrafos/bloques."""
+    if not os.path.exists(ruta_archivo):
+        return []
+    
+    with open(ruta_archivo, "r", encoding="utf-8") as f:
+        contenido = f.read()
+    
+    # Dividir por párrafos o líneas dobles
+    parrafos = [p.strip() for p in contenido.split("\n\n") if p.strip()]
+    return parrafos
+
 
 # ---------------------------------------------------------------------------
 # 5. Funciones del Agente RAG
