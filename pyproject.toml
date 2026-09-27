@@ -1,12 +1,19 @@
-[project]
-name = "blank-app-template"
-version = "0.1.0"
-description = "A simple Streamlit app template."
-readme = "README.md"
-requires-python = ">=3.14"
-dependencies = [
-    "streamlit>=1.61.1",
-]
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
-[tool.uv]
-package = false
+[project]
+name = "agente-ia-cv-rag"
+version = "0.1.0"
+description = "Agente de IA Personal con RAG (CV + GitHub) y herramientas SQL"
+authors = [
+    { name = "Juan Ramón Divisón" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.30.0",
+    "google-genai>=0.1.0",
+    "chromadb>=0.4.20",
+    "requests>=2.31.0",
+]
